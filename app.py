@@ -11,10 +11,12 @@ file_urls = [
     'https://www.dropbox.com/scl/fi/jdeana2t9lzec0czwvafu/1116839_Lesson_Hand_1280x720.mp4?rlkey=qbahgmbk3jjm2g6t0obl53uw0&st=w2jlo6oc&dl=1'
 ]
 
+
 def download_file(url, save_name):
     if not os.path.exists(save_name):
         file = requests.get(url)
         open(save_name, 'wb').write(file.content)
+
 
 for i, url in enumerate(file_urls):
     if 'mp4' in file_urls[i]:
@@ -22,8 +24,15 @@ for i, url in enumerate(file_urls):
     else:
         download_file(file_urls[i], f"image_{i}.jpg")
 
-model = YOLO('best.pt')
-path  = [['image_0.jpg'], ['image_1.jpg']]
+model = YOLO('./yolov9e_100epochs_fold3_best.pt')
+path = [['image_0.jpg'],
+        ['image_1.jpg'],
+        ['./test_gradio/3005224.jpg'],
+        ['./test_gradio/3005231.jpg'],
+        ['./test_gradio/3005242.jpg'],
+        ['./test_gradio/3005258.jpg'],
+        ['./test_gradio/3005273.jpg'],
+        ['./test_gradio/3005276.jpg']]
 video_path = [['video.mp4']]
 
 # Define a color map for different classes
@@ -33,6 +42,7 @@ color_map = {
     2: (34, 92, 240),  # Blue
     # Add more colors as needed for additional classes
 }
+
 
 def show_preds_image(image_path):
     if isinstance(image_path, dict):
@@ -47,8 +57,10 @@ def show_preds_image(image_path):
         confidence = results.boxes.conf[i].item()
         color = color_map.get(cls, (255, 255, 255))  # Default to white if class not in color_map
         cv2.rectangle(image, (x1, y1), (x2, y2), color=color, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(image, f"{label} {confidence:.2f}", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, color, 2, cv2.LINE_AA)
+        cv2.putText(image, f"{label} {confidence:.2f}", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, color, 2,
+                    cv2.LINE_AA)
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
 
 inputs_image = [
     gr.components.Image(type="filepath", label="Input Image"),
@@ -65,10 +77,11 @@ interface_image = gr.Interface(
     cache_examples=False,
 )
 
+
 def show_preds_video(video_path):
     if isinstance(video_path, dict):
         video_path = video_path['name']
-    
+
     cap = cv2.VideoCapture(video_path)
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -90,7 +103,8 @@ def show_preds_video(video_path):
                 confidence = results.boxes.conf[i].item()
                 color = color_map.get(cls, (255, 255, 255))  # Default to white if class not in color_map
                 cv2.rectangle(frame, (x1, y1), (x2, y2), color=color, thickness=2, lineType=cv2.LINE_AA)
-                cv2.putText(frame, f"{label} {confidence:.2f}", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, color, 2, cv2.LINE_AA)
+                cv2.putText(frame, f"{label} {confidence:.2f}", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, color, 2,
+                            cv2.LINE_AA)
             out.write(frame)
         else:
             break
@@ -98,6 +112,7 @@ def show_preds_video(video_path):
     cap.release()
     out.release()
     return output_video_path
+
 
 inputs_video = [
     gr.components.Video(label="Input Video"),
