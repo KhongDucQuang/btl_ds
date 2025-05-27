@@ -5,35 +5,18 @@ import os
 
 from ultralytics import YOLO
 
-file_urls = [
-    'https://www.dropbox.com/scl/fi/5i223blrvkarlczd6v175/3002177.jpg?rlkey=mcfhy20cpu0hltqdcy7jtohin&st=noqsik1v&dl=1',
-    'https://www.dropbox.com/scl/fi/7u4e56zdz5i5gsbneo9jv/Screenshot-2024-06-12-161636.png?rlkey=0tuqjo51ptop3aa4rzissvmio&st=2oh7ko6z&dl=1',
-    'https://www.dropbox.com/scl/fi/jdeana2t9lzec0czwvafu/1116839_Lesson_Hand_1280x720.mp4?rlkey=qbahgmbk3jjm2g6t0obl53uw0&st=w2jlo6oc&dl=1'
-]
 
-
-def download_file(url, save_name):
-    if not os.path.exists(save_name):
-        file = requests.get(url)
-        open(save_name, 'wb').write(file.content)
-
-
-for i, url in enumerate(file_urls):
-    if 'mp4' in file_urls[i]:
-        download_file(file_urls[i], f"video.mp4")
-    else:
-        download_file(file_urls[i], f"image_{i}.jpg")
-
+    
 model = YOLO('./yolov9e_100epochs_fold3_best.pt')
-path = [['image_0.jpg'],
-        ['image_1.jpg'],
+path = [['./test_gradio/image_0.jpg'],
+        ['./test_gradio/image_1.jpg'],
         ['./test_gradio/3005224.jpg'],
         ['./test_gradio/3005231.jpg'],
         ['./test_gradio/3005242.jpg'],
         ['./test_gradio/3005258.jpg'],
         ['./test_gradio/3005273.jpg'],
         ['./test_gradio/3005276.jpg']]
-video_path = [['video.mp4']]
+video_path = [['./test_gradio/video.mp4']]
 
 # Define a color map for different classes
 color_map = {

@@ -2,6 +2,7 @@
 # Usage: pip install -r requirements.txt
  
 # Base ----------------------------------------
+gradio
 hydra-core>=1.2.0
 matplotlib>=3.2.2
 numpy>=1.18.5
